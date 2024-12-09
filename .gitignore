@@ -1,0 +1,25 @@
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+.DS_Store
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directories
+node_modules/
+package-lock.json
+
+# dotenv environment variables file
+.env
+
+# FuseBox cache
+.fusebox/
+
+# Webpack
+.webpack/
+
+# Electron-Forge
+out/
