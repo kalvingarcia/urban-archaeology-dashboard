@@ -100,19 +100,26 @@ const useStyles = createUseStyles((theme) => ({
     }
 }));
 
-export default function TextField({className, label, helperText, onChange, value, ...props}) {
+export default function TextField({className, label, helperText, value, onChange, onClick, ...props}) {
     const [textField, setTextField] = useState(undefined);
-    const handleContainerClick = useCallback(() => {
+    const handleContainerClick = useCallback(event => {
         if(textField)
             textField.focus();
+        onClick?.(event);
     }, [textField]);
 
+    const [text, setText] = useState(value?? "");
+    useEffect(() => {
+        setText(value?? "");
+        setFilled(!value || value === ""? false : true);
+    }, [value]);
     const [filled, setFilled] = useState(!value || value === ""? false : true);
     const handleFill = useCallback(event => {
         const target = event.currentTarget;
         setFilled(true);
         if(!target.value || !target.value.trim().length)
             setFilled(false);
+        setText(target.value);
         onChange?.(target.value);
     }, []);
 
@@ -128,13 +135,13 @@ export default function TextField({className, label, helperText, onChange, value
                         id={label}
                         name={label}
                         type="text"
-                        defaultValue={value}
+                        value={text}
                         onChange={handleFill}
                         {...props}
                     />
                 </label>
             </div>
-            {helperText? <Label className="helper">{helperText}</Label> : ""}
+            {helperText && <Label className="helper">{helperText}</Label>}
         </div>
     )
 }
