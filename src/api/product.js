@@ -54,7 +54,7 @@ export async function GET_PRODUCT_BY_ID(id) {
                 WHERE variation_finish.variationID = variation.id
             ) AS finishes, overview, (
                 SELECT COALESCE(json_agg(json_build_object(
-                    'id', tag.id,
+                    'id', CAST(tag.id AS TEXT),
                     'name', tag.name,
                     'category', tag.category
                 )), '[]') FROM tag INNER JOIN variation_tag ON variation_tag.tagID = tag.id
@@ -64,7 +64,7 @@ export async function GET_PRODUCT_BY_ID(id) {
         )
         SELECT id, name, description, (
             SELECT COALESCE(json_agg(json_build_object(
-                'id', variations.id,
+                'id', CAST(variations.id AS TEXT),
                 'extension', variations.extension,
                 'subname', variations.subname,
                 'description', variations.description,
