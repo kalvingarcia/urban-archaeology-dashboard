@@ -1,18 +1,16 @@
 import {app, BrowserWindow, ipcMain} from 'electron';
 import started from 'electron-squirrel-startup';
 import {GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID} from './api/product';
+import {GET_ALL_FINISHES} from './api/finishes';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
-ipcMain.handle("GET_ALL_PRODUCTS", async (event, search, filters) => {
-  return await GET_ALL_PRODUCTS(search, filters);
-});
-ipcMain.handle("GET_PRODUCT_BY_ID", async (event, id) => {
-  return await GET_PRODUCT_BY_ID(id);
-});
+ipcMain.handle("GET_ALL_PRODUCTS", async (_, search, filters) => await GET_ALL_PRODUCTS(search, filters));
+ipcMain.handle("GET_PRODUCT_BY_ID", async (_, id) => await GET_PRODUCT_BY_ID(id));
+ipcMain.handle("GET_ALL_FINISHES", async () => await GET_ALL_FINISHES());
 
 const airForce =  "#799EB3"; // Primary Mid Color
 
@@ -22,6 +20,8 @@ const createWindow = () => {
     backgroundColor: airForce,
     width: 1600,
     height: 900,
+    minHeight: 900,
+    minWidth: 1600,
     titleBarStyle: 'hidden',
     titleBarOverlay: process.platform !== 'darwin' ? true : null,
     webPreferences: {
