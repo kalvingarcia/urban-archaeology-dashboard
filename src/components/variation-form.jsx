@@ -1,8 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
+import FinishesForm from './finishes-form';
 import TextField from './common/text-field';
 import TextArea from './common/text-area';
-import FinishesForm from './finishes-form';
+import Switch from './common/switch';
+import TagForm from './tag-form';
+import OverviewForm from './overview-form';
 
 const variationFormStyles = createUseStyles({
     variationForm: {
@@ -27,10 +30,23 @@ const variationFormStyles = createUseStyles({
                 "& > *": {
                     flex: "1 1 auto"
                 }
-            }
+            },
         },
         "& .column2": {
-            width: "100%"
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+
+            "& .filterables": {
+                display: "flex",
+                "& .switches": {
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px"
+                }
+            }
         }
     }
 });
@@ -53,15 +69,14 @@ export default function VariationForm({variationData, onChange}) {
                 <FinishesForm finishesData={variation.finishes} onChange={finishes => setVariation({...variation, finishes})} />
             </div>
             <div className="column2">
-                <div>
-                    {/* <Switch />
-                    <Switch /> */}
+                <div className="filterables">
+                    <div className="switches">
+                        <Switch label="Featured" value={variation.featured} onChange={featured => setVariation({...variation, featured})} />
+                        <Switch label="Display" value={variation.display} onChange={display => setVariation({...variation, display})} />
+                    </div>
+                    <TagForm tagData={variation.tags} onChange={tags => setVariation({...variation, tags})} />
                 </div>
-                <div>
-                    {variation.tags.map(tag => (
-                        <div key={tag.id}>{tag.name}</div>
-                    ))}
-                </div>
+                <OverviewForm />
             </div>
         </div>
     );
