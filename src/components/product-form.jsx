@@ -80,12 +80,17 @@ export default function ProductForm() {
     const addVariationForm = useCallback(() => {
 
     }, [product]);
+
     const handleVariationForm = useCallback(variation => {
         const variations = product.variations;
         const position = variations.findIndex(({id}) => id === variation.id);
         variations[position] = variation;
 
         setProduct({...product, variations});
+    }, [product]);
+
+    useEffect(() => {
+        // console.log(product);
     }, [product]);
 
     const styles = productFormStyles();
@@ -106,7 +111,7 @@ export default function ProductForm() {
             </div>
             <Tabs className={styles.tabs}>
                 {product.variations.map(variation => (
-                    <Tab key={variation.id} className={styles.tab} name={variation.subname} button={<Icon icon="close" button />}>
+                    <Tab key={variation.id} className={styles.tab} name={variation.subname === ""? "Default" : variation.subname} button={<Icon icon="close" button />}>
                         <VariationForm variationData={variation} onChange={handleVariationForm} />
                     </Tab>
                 ))}
