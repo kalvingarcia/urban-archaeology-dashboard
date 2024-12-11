@@ -1,7 +1,21 @@
 import Database from "./common/database";
 
-export async function GET_ALL_PRODUCTS(search = "", filters = {}) {
+export async function GET_ALL_PRODUCTS() {
     return await Database`
+        WITH categories AS (
+            SELECT DISTINCT variation.productID AS id, variation.extension AS extension, tag.name AS category
+            FROM variation INNER JOIN variation_tag ON variation_tag.variationID = variation.id
+                INNER JOIN tag ON variation_tag.tagID = tag.id
+            WHERE tag.category = 'Class'
+        )
+        SELECT product.id AS id, name, category, COUNT(DISTINCT variation.extension) AS variationCount
+        FROM product INNER JOIN variation ON variation.productID = product.id
+            INNER JOIN categories ON product.id = categories.id AND variation.extension = categories.extension
+        GROUP BY product.id, name, category
+    `
+}
+
+/*
         ${search != "" ?
             Database`
                 WITH search_filtered AS (
@@ -40,7 +54,7 @@ export async function GET_ALL_PRODUCTS(search = "", filters = {}) {
         WHERE variation.display = TRUE
         GROUP BY product.id, name, category
     `
-}
+*/
 
 export async function GET_PRODUCT_BY_ID(id) {
     return (await Database`
