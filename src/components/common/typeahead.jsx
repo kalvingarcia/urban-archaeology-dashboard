@@ -40,18 +40,18 @@ const menuStyles = createUseStyles((theme) => ({
         position: "fixed",
         inset: 0,
     },
-    list: ({height, flip}) => ({
+    list: {
         width: "100%",
-        height: `${height}px`,
+        height: ({height}) => `${height}px`,
         position: "absolute",
-        bottom: flip? "55px" : undefined,
+        bottom: ({flip}) => flip? "55px" : null,
         overflow: "auto",
-        borderRadius: flip? "16px" : "0 0 16px 16px",
+        borderRadius: ({flip}) => flip? "16px" : "0 0 16px 16px",
         border: `1pt solid ${theme.body + "7F"}`,
         backgroundColor: theme.surface,
         zIndex: 2,
         transition: "height 300ms ease"
-    }),
+    },
     grow: {
         animation: "$grow 300ms ease-out forwards",
     },
@@ -72,14 +72,11 @@ export default function Typeahead({className, label, options, defaultOption, onC
         setAvailable(options);
     }, [options]);
 
-    const [display, setDisplay] = useState(defaultOption?.display);
+    const [display, setDisplay] = useState(defaultOption?.display?? "");
     const [filter, setFilter] = useState("");
     const handleTypeahead = useCallback(text => {
         setFilter(text);
     }, []);
-    const handleReset = useCallback(event => {
-        if(event.target.value !== display) setDisplay(new String(display));
-    }, [display]);
     const handleSelect = useCallback(option => {
         setDisplay(option.display);
         setOpen(false);
@@ -105,6 +102,13 @@ export default function Typeahead({className, label, options, defaultOption, onC
         }
     }, [position, open, flip]);
 
+    const [dropdown, setDropdown] = useState();
+    const handleBlur = useCallback(event => {
+        if(event.target.value !== display) setDisplay(new String(display));
+        if(event.relatedTarget !== dropdown)
+            setOpen(false);
+    }, [display, dropdown]);
+
     const styles = menuStyles({height, flip});
     return (
         <div id={label} className={combine(styles.menu, className)}>
@@ -112,14 +116,13 @@ export default function Typeahead({className, label, options, defaultOption, onC
                 label={label} 
                 value={display} 
                 onFocus={() => setOpen(true)} 
-                onBlur={event => handleReset(event) || setOpen(false)}
+                onBlur={handleBlur}
                 onChange={handleTypeahead} 
                 onClick={() => setOpen(true)} 
             />
             <div ref={setPosition}>
-                {open && <div className={styles.overlay} onClick={() => setOpen(false)} />}
                 <Animate show={open} classes={{enter: styles.grow, exit: styles.shrink}}>
-                    <div tabIndex={-1} className={styles.list}>
+                    <div ref={setDropdown} tabIndex={-1} className={styles.list}>
                         {available?.filter(option => option.display.toLowerCase().includes(filter.toLowerCase())).map(option => (
                             <Option key={option.value} display={option.display} value={option.value} onClick={handleSelect} />
                         ))}
