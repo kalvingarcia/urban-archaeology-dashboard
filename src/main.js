@@ -2,15 +2,17 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import started from 'electron-squirrel-startup';
 import {GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID} from './api/product';
 import {GET_ALL_FINISHES} from './api/finishes';
+import {GET_ALL_TAGS} from './api/tag';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
-ipcMain.handle("GET_ALL_PRODUCTS", async (_, search, filters) => await GET_ALL_PRODUCTS(search, filters));
+ipcMain.handle("GET_ALL_PRODUCTS", async () => await GET_ALL_PRODUCTS());
 ipcMain.handle("GET_PRODUCT_BY_ID", async (_, id) => await GET_PRODUCT_BY_ID(id));
 ipcMain.handle("GET_ALL_FINISHES", async () => await GET_ALL_FINISHES());
+ipcMain.handle("GET_ALL_TAGS", async () => GET_ALL_TAGS());
 
 const airForce =  "#799EB3"; // Primary Mid Color
 
