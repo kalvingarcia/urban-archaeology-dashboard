@@ -4,7 +4,7 @@ import Icon from './common/icon';
 import TextField from './common/text-field';
 import Typeahead from './common/typeahead';
 import {Subheading} from './common/typography';
-import useFinishes from './hooks/finishes';
+import {useFinishes} from './hooks/api-cache';
 
 const finishStyles = createUseStyles({
     finish: {
@@ -47,7 +47,11 @@ const finishesFormStyles = createUseStyles({
     heading: {
         display: "flex",
         alignItems: "center",
-        gap: "20px"
+        gap: "20px",
+
+        "& .add": {
+            top: "-12px"
+        }
     },
     container: {
         display: "flex",
@@ -79,7 +83,7 @@ export default function FinishesForm({finishesData, onChange}) {
         <div className={styles.finishesForm}>
             <div className={styles.heading}>
                 <Subheading>Finishes</Subheading>
-                <Icon icon="add" button onPress={addFinish} />
+                <Icon className="add" icon="add" button onPress={addFinish} />
             </div>
             <div className={styles.container}>
                 {finishes.map((finish, index) => (

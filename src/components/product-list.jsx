@@ -5,6 +5,7 @@ import Table, {Row} from './common/table';
 import Button from './common/button';
 import Icon from './common/icon';
 import {Title, Label} from './common/typography';
+import {useProducts} from './hooks/api-cache';
 
 const useStyles = createUseStyles({
     productList: {
@@ -63,12 +64,7 @@ function ProductEntry({data}) {
 }
 
 export default function ProductList() {
-    const [productList, setProductList] = useState([]);
-    useEffect(() => {
-        (async () => {
-            setProductList(await window.api.GET_ALL_PRODUCTS());
-        })();
-    }, []);
+    const {products} = useProducts();
 
     const styles = useStyles();
     return (
@@ -83,7 +79,7 @@ export default function ProductList() {
             </div>
             <div className={styles.table}>
                 <Table headers={["ID", "Product Name", "Category", "Variation Count"]}>
-                    {productList.map(product => (
+                    {products.map(product => (
                         <ProductEntry key={product.id} data={product} />
                     ))}
                 </Table>
