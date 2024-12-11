@@ -82,7 +82,7 @@ const raisinBlack =  "#1C1E26"; // Dark Font Color or Dark Background Color
 const platinum =  "#ECECEE"; // Light Surface Color
 const onyx =  "#222534"; // Dark Surface Color
 
-const aliceBlue =  "#E0F0F6"; // Primary Light Color
+const aliceBlue =  "#D0E0E6"; // Primary Light Color
 const airForce =  "#799EB3"; // Primary Mid Color
 const prussianBlue =  "#113A54"; // Primary Dark Color
 
