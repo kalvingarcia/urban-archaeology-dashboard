@@ -29,6 +29,7 @@ const typographyStyles = createUseStyles((theme) => ({
         color: ({container}) => container === "surface"? theme.body : theme[`on${capitalize(container)}`]
     },
     subheading: {
+        marginTop: "20px",
         display: "block",
         position: "relative",
         fontSize: "24px",
