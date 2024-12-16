@@ -14,10 +14,11 @@ const useStyles = createUseStyles((theme) => ({
         flexDirection: "column",
         gap: "40px",
         borderRadius: "16px",
-        backgroundColor: theme.onPrimary + "1F"
+        backgroundColor: ({error}) => error? theme.onError + "5F" : theme.onPrimary + "1F"
     },
     label: {
-        marginBottom: "10px"
+        marginBottom: "10px",
+        color: ({error}) => error? theme.onError : theme.onPrimary
     },
     tagList: {
         display: "flex",
@@ -26,10 +27,13 @@ const useStyles = createUseStyles((theme) => ({
     }
 }));
 
-export default function TagForm({tagData, onChange}) {
-    const [tags, setTags] = useState(tagData);
+export default function TagForm({tagData, onChange, error = false}) {
+    const [tags, setTags] = useState(tagData?? []);
+    const changeTags = useCallback(() => {
+        onChange?.(tags);
+    }, [tags, onChange]);
     useEffect(() => {
-        onChange(tags);
+        changeTags();
     }, [tags]);
     const {tags: allTags} = useTags();
 
@@ -41,11 +45,13 @@ export default function TagForm({tagData, onChange}) {
         setTags(tags.filter(tag => tag.id !== id));
     }, [tags]);
 
-    const styles = useStyles();
+    console.log(error);
+
+    const styles = useStyles({error});
     return (
         <div className={styles.tagForm}>
             <div className={styles.heading}>
-                <Subheading className={styles.label}>Tags</Subheading>
+                <Subheading className={styles.label}>Tags*</Subheading>
                 <Typeahead 
                     label="Search"
                     options={allTags.map(({id, name}) => ({value: id, display: name}))}

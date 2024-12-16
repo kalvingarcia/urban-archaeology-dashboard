@@ -51,11 +51,16 @@ const variationFormStyles = createUseStyles({
     }
 });
 
-export default function VariationForm({variationData, onChange}) {
-    const [variation, setVariation] = useState(variationData);
+export default function VariationForm({variationData, onChange, errors}) {
+    const [variation, setVariation] = useState(variationData?? {});
+    const changeVariation = useCallback(() => {
+        onChange?.(variation);
+    }, [variation, onChange]);
     useEffect(() => {
-        onChange(variation);
+        changeVariation();
     }, [variation]);
+
+    console.log(errors)
     
     const styles = variationFormStyles();
     return (
@@ -65,8 +70,8 @@ export default function VariationForm({variationData, onChange}) {
                     <TextField label="Variation Subname" placeholder="Opal" value={variation.subname}  onChange={subname => setVariation({...variation, subname})} />
                     <TextField label="Variation Extension" placeholder="O" value={variation.extension}  onChange={extension => setVariation({...variation, extension})} />
                 </div>
-                <TextArea label="Variation Description" value={variation.description} />
-                <FinishesForm finishesData={variation.finishes} onChange={finishes => setVariation({...variation, finishes})} />
+                <TextArea label="Variation Description" value={variation.description} onChange={description => setVariation({...variation, description})} />
+                <FinishesForm finishesData={variation.finishes} onChange={finishes => setVariation({...variation, finishes})} error={errors?.finishes} />
             </div>
             <div className="column2">
                 <div className="filterables">
@@ -74,9 +79,9 @@ export default function VariationForm({variationData, onChange}) {
                         <Switch label="Featured" value={variation.featured} onChange={featured => setVariation({...variation, featured})} />
                         <Switch label="Display" value={variation.display} onChange={display => setVariation({...variation, display})} />
                     </div>
-                    <TagForm tagData={variation.tags} onChange={tags => setVariation({...variation, tags})} />
+                    <TagForm tagData={variation.tags} onChange={tags => setVariation({...variation, tags})} error={errors?.tags} />
                 </div>
-                <OverviewForm />
+                <OverviewForm overviewData={variation.overview} onChange={overview => setVariation({...variation, overview})} />
             </div>
         </div>
     );
