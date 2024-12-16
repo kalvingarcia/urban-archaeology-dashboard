@@ -1,16 +1,9 @@
-import React, {useState, useCallback, useEffect, useContext, createContext} from 'react';
+import React, {useState, useCallback, useContext, createContext} from 'react';
 import {createUseStyles, ThemeProvider} from 'react-jss';
-import {combine} from './helpers/styles';
 
 import materialIcons from "./icons/MaterialIcons.woff2";
 
-const useStyles = createUseStyles((theme) => ({
-    theme: ({theme}) => ({
-        height: "100%",
-        width: "100%",
-        backgroundColor: theme.background,
-        color: theme.body
-    }),
+const globalStyles = createUseStyles((theme) => ({
     "@font-face": {
         fontFamily: "MaterialIcons",
         src: `url(${materialIcons})`
@@ -20,13 +13,16 @@ const useStyles = createUseStyles((theme) => ({
             transition: "background-color 300ms ease-in-out"
         },
         "html, body": {
-            backgroundColor: theme.background,
             userSelect: "none",
             position: "relative",
             width: "100%",
             height: "100%",
             overflow: "hidden",
-            margin: 0,
+            margin: 0
+        },
+        body: {
+            backgroundColor: theme.background,
+            color: theme.body,
             lineHeight: 1,
             "& *": {
                 boxSizing: "border-box",
@@ -93,7 +89,7 @@ const lion =  "#AB8F5C"; // Secondary Dark Color
 const clot =  "#C2AEAE"; // Error Light Color
 const wine =  "#4F1E2B"; // Error Dark Color
 
-export default function Themer({className, darkModeDefault = true, setDarkModeCookie, children}) {
+export default function Themer({darkModeDefault = true, setDarkModeCookie, children}) {
     const [darkMode, setDarkMode] = useState(darkModeDefault);
     // The toggle function which caches two versions
     const toggleDarkMode = useCallback(() => {
@@ -125,14 +121,12 @@ export default function Themer({className, darkModeDefault = true, setDarkModeCo
         };
     }, []);
 
-    const theme = generateTheme(darkMode);
-    const styles = useStyles({theme});
+    const theme = generateTheme(darkMode)
+    globalStyles({theme});
     return (
         <ThemeProvider theme={theme}>
             <DarkModeContext.Provider value={{darkMode, toggleDarkMode}}>
-                <div className={combine(styles.theme, className)}>
-                    {children}
-                </div>
+                {children}
             </DarkModeContext.Provider>
         </ThemeProvider>
     );
