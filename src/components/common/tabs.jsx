@@ -1,5 +1,6 @@
 import React, {Children, useState, cloneElement} from 'react';
 import {createUseStyles} from 'react-jss';
+import Icon from './icon';
 import {Label} from './typography';
 import {combine} from './helpers/styles';
 import useRippleEffect from './hooks/ripple';
@@ -103,7 +104,7 @@ export function Tab({className, children}) {
     );
 }
 
-export default function Tabs({className, children}) {
+export default function Tabs({className, add, children}) {
     const [currentTab, setCurrentTab] = useState(0);
     const tabs = Children.toArray(children);
 
@@ -116,6 +117,7 @@ export default function Tabs({className, children}) {
                         {tab.props.name}
                     </TabHeader>
                 ))}
+                {add && <Icon icon="add_circle" button appearance="text" onPress={add} />}
             </div>
             {tabs[currentTab]}
         </div>
