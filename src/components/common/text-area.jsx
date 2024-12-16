@@ -106,21 +106,28 @@ const useStyles = createUseStyles((theme) => ({
     }
 }));
 
-export default function TextArea({className, label, helperText, onChange, value, ...props}) {
+export default function TextArea({className, label, helperText, onChange, value, onClick, ...props}) {
     const [textArea, setTextArea] = useState(undefined);
-    const handleContainerClick = useCallback(() => {
+    const handleContainerClick = useCallback(event => {
         if(textArea)
             textArea.focus();
+        onClick?.(event);
     }, [textArea]);
 
+    const [text, setText] = useState(value?? "");
+    useEffect(() => {
+        setText(value?? "");
+        setFilled(!value || value === ""? false : true);
+    }, [value]);
     const [filled, setFilled] = useState(!value || value === ""? false : true);
     const handleFill = useCallback(event => {
         const target = event.currentTarget;
         setFilled(true);
         if(!target.value || !target.value.trim().length)
             setFilled(false);
-        onChange?.(event);
-    }, []);
+        setText(target.value);
+        onChange?.(target.value);
+    }, [onChange]);
 
     const styles = useStyles({filled});
     return (
@@ -134,7 +141,7 @@ export default function TextArea({className, label, helperText, onChange, value,
                         rows={3}
                         id={label}
                         name={label}
-                        defaultValue={value}
+                        value={text}
                         onChange={handleFill}
                         {...props}
                     />

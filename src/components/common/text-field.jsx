@@ -15,11 +15,11 @@ const useStyles = createUseStyles((theme) => ({
             width: "100%",
             height: "fit-content",
             fontSize: "15px",
-            color: theme.body,
+            color: ({error}) => error? theme.onError : theme.body,
             transition: "color 200ms ease-in-out"
         },
         "&:focus-within .helper": {
-            color: theme.onSecondary
+            color: ({error}) => error? theme.onError : theme.onSecondary
         }
     },
     textField: {
@@ -28,20 +28,20 @@ const useStyles = createUseStyles((theme) => ({
         position: "relative",
         cursor: "text",
         borderRadius: "10px 10px 0 0",
-        backgroundColor: theme.surface + "7F",
+        backgroundColor: ({error}) => error? theme.error + "3F" : theme.surface + "7F",
         padding: "10px 20px",
         overflow: "hidden",
-        borderBottom: `1pt solid ${theme.body + "7F"}`,
-        transition: "border-bottom 200ms ease-in-out",
+        borderBottom: ({error}) => `1pt solid ${error? theme.onError + "7F" : theme.body + "7F"}`,
+        transition: "background-color 300ms ease, border-bottom 200ms ease-in-out",
         "&:focus-within": {
-            borderColor: theme.onSecondary
+            borderColor: ({error}) => error? theme.onError : theme.onSecondary
         },
         "&::before": {
             content: "''",
             position: "absolute",
             inset: 0,
             opacity: 0,
-            backgroundColor: theme.body
+            backgroundColor: ({error}) => error? theme.onError : theme.body
         },
         "&:hover::before": {
             opacity: 0.2
@@ -57,7 +57,7 @@ const useStyles = createUseStyles((theme) => ({
             transform: "scale(0)",
             opacity: 0,
             transition: "transform 100ms ease, opacity 200ms ease",
-            borderBottom: `1pt solid ${theme.onSecondary}`
+            borderBottom: ({error}) => `1pt solid ${error? theme.onError : theme.onSecondary}`
         },
         "&:focus-within::after": {
             transform: "scale(1)",
@@ -77,7 +77,7 @@ const useStyles = createUseStyles((theme) => ({
                 color: "transparent"
             },
             "&:focus::placeholder": {
-                color: theme.body + "7F"
+                color: ({error}) => error? theme.onError + "7F" : theme.body + "7F"
             }
         },
         "& .label": {
@@ -87,12 +87,12 @@ const useStyles = createUseStyles((theme) => ({
             transform: ({filled}) => filled? "translate(0, -80%) scale(0.7)" : "translate(0, -50%)",
             opacity: 0.5,
             transition: "transform 200ms ease, opacity 200ms ease, color 200ms ease",
-            color: theme.body
+            color: ({error}) => error? theme.onError : theme.body
         },
         "&:focus-within .label": {
             transform: "translate(0, -80%) scale(0.7)",
             opacity: 1,
-            color: theme.onSecondary
+            color: ({error}) => error? theme.onError : theme.onSecondary
         },
         "&:has(input:required) .label::after": {
             content: "'*'"
@@ -100,7 +100,7 @@ const useStyles = createUseStyles((theme) => ({
     }
 }));
 
-export default function TextField({className, label, helperText, value, onChange, onClick, ...props}) {
+export default function TextField({className, label, helperText, value, onChange, onClick, error, ...props}) {
     const [textField, setTextField] = useState(undefined);
     const handleContainerClick = useCallback(event => {
         if(textField)
@@ -121,9 +121,9 @@ export default function TextField({className, label, helperText, value, onChange
             setFilled(false);
         setText(target.value);
         onChange?.(target.value);
-    }, []);
+    }, [onChange]);
 
-    const styles = useStyles({filled});
+    const styles = useStyles({filled, error});
     return (
         <div className={styles.container}>
             <div tabIndex={-1} className={combine(styles.textField, className)} onClick={handleContainerClick}>
