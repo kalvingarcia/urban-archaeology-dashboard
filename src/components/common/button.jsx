@@ -1,4 +1,4 @@
-import React, { cloneElement } from 'react';
+import React, {cloneElement} from 'react';
 import {createUseStyles} from 'react-jss';
 import useRippleEffect from './hooks/ripple';
 import {capitalize, combine} from './helpers/styles';

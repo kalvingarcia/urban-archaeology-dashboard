@@ -72,6 +72,7 @@ export default function Typeahead({className, label, options, defaultOption, onC
         setAvailable(options);
     }, [options]);
 
+    const [open, setOpen] = useState(false);
     const [display, setDisplay] = useState(defaultOption?.display?? "");
     const [filter, setFilter] = useState("");
     const handleTypeahead = useCallback(text => {
@@ -83,7 +84,6 @@ export default function Typeahead({className, label, options, defaultOption, onC
         onChange?.(option.value);
     }, [onChange]);
 
-    const [open, setOpen] = useState(false);
     const [position, setPosition] = useState(undefined);
     const [height, setHeight] = useState(0);
     const [flip, setFlip] = useState(false);
