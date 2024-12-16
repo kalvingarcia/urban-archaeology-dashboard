@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router';
 import {createUseStyles} from 'react-jss';
 import Table, {Row} from './common/table';
-import Button from './common/button';
 import Icon from './common/icon';
+import Button from './common/button';
 import {Title, Label} from './common/typography';
 import {useProducts} from './hooks/api-cache';
 
@@ -65,6 +65,7 @@ function ProductEntry({data}) {
 
 export default function ProductList() {
     const {products} = useProducts();
+    const navigate = useNavigate();
 
     const styles = useStyles();
     return (
@@ -74,7 +75,7 @@ export default function ProductList() {
                 <div className="actions">
                     {/* <Search /> */}
                     <Icon icon="manage_search" role="secondary" button appearance="tonal" />
-                    <Button icon={<Icon icon="add_circle" />}>Create</Button>
+                    <Button icon={<Icon icon="add_circle" />} onPress={() => navigate("/products/create")}>Create</Button>
                 </div>
             </div>
             <div className={styles.table}>
