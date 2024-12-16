@@ -29,6 +29,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {HashRouter, Route, Routes} from 'react-router';
 import {createUseStyles} from 'react-jss';
+import Themer from './components/common/themer';
 import Layout from "./components/layout";
 import Welcome from './components/welcome';
 import ProductList from "./components/product-list";
@@ -157,19 +158,21 @@ function App() {
     fonts();
 
     return (
-        <HashRouter>
-            <Routes>
-                <Route element={<Layout />}>
-                    <Route path="/" element={<Welcome />} />
-                    <Route path="products">
-                        <Route index element={<ProductList />} />
-                        <Route path="create" element={<ProductForm />} />
-                        <Route path=":id" element={<Product />} />
-                        <Route path=":id/edit" element={<ProductForm />} />
+        <Themer>
+            <HashRouter>
+                <Routes>
+                    <Route element={<Layout />}>
+                        <Route path="/" element={<Welcome />} />
+                        <Route path="products">
+                            <Route index element={<ProductList />} />
+                            <Route path="create" element={<ProductForm />} />
+                            <Route path=":id" element={<Product />} />
+                            <Route path=":id/edit" element={<ProductForm />} />
+                        </Route>
                     </Route>
-                </Route>
-            </Routes>
-        </HashRouter>
+                </Routes>
+            </HashRouter>
+        </Themer>
     );
 }
 

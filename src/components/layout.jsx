@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useLocation} from 'react-router';
 import {createUseStyles} from 'react-jss';
 import {Outlet} from 'react-router';
-import Themer from './common/themer';
 import Icon from './common/icon';
 import UrbanIcon from "./urban-icon";
 import NavigationRail from './common/navigation-rail';
@@ -62,6 +61,8 @@ function Settings() {
 
 const useStyles = createUseStyles((theme) => ({
     layout: {
+        width: "100%",
+        height: "100%",
         display: "flex",
         fontFamily: "Univers",
         fontWeight: "400",
@@ -98,7 +99,7 @@ const useStyles = createUseStyles((theme) => ({
 export default function Layout() {
     const styles = useStyles();
     return (
-        <Themer className={styles.layout}>
+        <div className={styles.layout}>
             <NavigationRail className="navigation">
                 <NavigationLinks />
                 <Settings />
@@ -106,6 +107,6 @@ export default function Layout() {
             <main className={styles.main}>
                 <Outlet />
             </main>
-        </Themer>
+        </div>
     );
 }
