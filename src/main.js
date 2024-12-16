@@ -1,6 +1,6 @@
 import {app, BrowserWindow, ipcMain} from 'electron';
 import started from 'electron-squirrel-startup';
-import {GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID} from './api/product';
+import {CREATE_NEW_PRODUCT, GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID, UPDATE_PRODUCT_BY_ID} from './api/product';
 import {GET_ALL_FINISHES} from './api/finishes';
 import {GET_ALL_TAGS} from './api/tag';
 
@@ -11,15 +11,14 @@ if (started) {
 
 ipcMain.handle("GET_ALL_PRODUCTS", async () => await GET_ALL_PRODUCTS());
 ipcMain.handle("GET_PRODUCT_BY_ID", async (_, id) => await GET_PRODUCT_BY_ID(id));
+ipcMain.handle("UPDATE_PRODUCT_BY_ID", async (_, id, product) => await UPDATE_PRODUCT_BY_ID(id, product));
+ipcMain.handle("CREATE_NEW_PRODUCT", async (_, product) => await CREATE_NEW_PRODUCT(product));
 ipcMain.handle("GET_ALL_FINISHES", async () => await GET_ALL_FINISHES());
-ipcMain.handle("GET_ALL_TAGS", async () => GET_ALL_TAGS());
-
-const airForce =  "#799EB3"; // Primary Mid Color
+ipcMain.handle("GET_ALL_TAGS", async () => await GET_ALL_TAGS());
 
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    backgroundColor: airForce,
     width: 1600,
     height: 900,
     minHeight: 900,

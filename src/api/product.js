@@ -92,3 +92,105 @@ export async function GET_PRODUCT_BY_ID(id) {
         FROM product WHERE product.id = ${id};
     `)[0]
 }
+
+export async function CREATE_NEW_PRODUCT(product) {
+    const {id, name, description, variations} = product;
+
+    await Database`
+        INSERT INTO product(id, name, description, index) 
+        VALUES (${id}, ${name}, ${description?? ""}, to_tsvector('english', ${id} || ' ' || ${name} || ' ' || ${description?? "''"}));
+    `;
+    const variationIDList = await Database`
+        INSERT INTO variation(extension, subname, description, display, featured, overview, productID, index)
+        VALUES ${Database.unsafe(variations.map(({extension, subname, description, display, featured, overview}) => (
+            `(
+                '${extension?? "NONE"}',
+                '${subname?? ""}',
+                '${description?? ""}',
+                ${display?? false},
+                ${featured?? false},
+                '${JSON.stringify(overview)}',
+                '${id}',
+                to_tsvector('english', '${extension}' || ' ' || '${subname}' || '${description}' || '${id}')
+            )`
+        )).join(", "))}
+        RETURNING id, extension;
+    `;
+    
+    for(const variation of variations) {
+        const variationID = variationIDList.find(({extension}) => variation.extension === extension).id;
+        const {tags, finishes} = variation;
+
+        await Database`
+            INSERT INTO variation_tag(variationID, tagID) 
+            VALUES ${Database.unsafe(tags.map(tag => (
+                `('${variationID}', '${tag.id}')`
+            )).join(", "))};
+        `;
+        await Database`
+            INSERT INTO variation_finish(price, variationID, finishCode)
+            VALUES ${Database.unsafe(finishes.map(finish => (
+                `('${finish.value?? Infinity}', '${variationID}', '${finish.id}')`
+            )).join(", "))};
+        `;
+    }
+}
+
+export async function UPDATE_PRODUCT_BY_ID(id, product) {
+    const {id: newID, name, description, variations} = product;
+
+    await Database`
+        UPDATE product
+        SET id = ${newID}, name = ${name}, description = ${description}
+        WHERE id = ${id};
+    `;
+
+    await Database`DELETE FROM variation WHERE extension NOT IN (${Database.unsafe(variations.map(({extension}) => `'${extension}'`).join(', '))}) AND productID = ${id};`;
+    const variationIDList = await Database`
+        INSERT INTO variation(extension, subname, description, display, featured, overview, productID, index)
+        VALUES ${Database.unsafe(variations.map(({extension, subname, description, display, featured, overview}) => (
+            `(
+                '${extension?? "NONE"}',
+                '${subname?? ""}',
+                '${description?? ""}',
+                ${display?? false},
+                ${featured?? false},
+                '${JSON.stringify(overview)}',
+                '${id}',
+                to_tsvector('english', '${extension}' || ' ' || '${subname}' || '${description}' || '${id}')
+            )`
+        )).join(", "))}
+        ON CONFLICT(extension, productID) DO UPDATE
+        SET subname = EXCLUDED.subname, description = EXCLUDED.description, display = EXCLUDED.display, featured = EXCLUDED.featured, overview = EXCLUDED.overview, index = EXCLUDED.index
+        RETURNING id, extension;
+    `;
+
+    for(const variation of variations) {
+        const variationID = variationIDList.find(({extension}) => variation.extension === extension).id;
+        const {tags, finishes} = variation;
+
+        await Database`DELETE FROM variation_tag WHERE tagID NOT IN (${Database.unsafe(tags.map(({id}) => `'${id}'`).join(", "))}) AND variationID = ${variationID};`
+        await Database`
+            INSERT INTO variation_tag(variationID, tagID) 
+            VALUES ${Database.unsafe(tags.map(tag => (
+                `('${variationID}', '${tag.id}')`
+            )).join(", "))}
+            ON CONFLICT(variationID, tagID) DO NOTHING;
+        `;
+        await Database`DELETE FROM variation_finish WHERE finishCode NOT IN (${Database.unsafe(tags.map(({id}) => `'${id}'`).join(", "))}) AND variationID = ${variationID};`
+        await Database`
+            INSERT INTO variation_finish(price, variationID, finishCode)
+            VALUES ${Database.unsafe(finishes.map(finish => (
+                `('${finish.value?? Infinity}', '${variationID}', '${finish.id}')`
+            )).join(", "))}
+            ON CONFLICT(variationID, finishCode) DO UPDATE
+            SET price = EXCLUDED.price;
+        `;
+    }
+}
+
+export async function DELETE_PRODUCT_BY_ID(id) {
+    await Database`
+        DELETE FROM product WHERE id = ${id};
+    `
+}
