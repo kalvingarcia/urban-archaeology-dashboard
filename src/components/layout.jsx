@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {createContext, useContext, useCallback, useEffect, useState} from 'react';
 import {useNavigate, useLocation} from 'react-router';
 import {createUseStyles} from 'react-jss';
 import {Outlet} from 'react-router';
@@ -59,7 +59,12 @@ function Settings() {
     )
 }
 
-const useStyles = createUseStyles((theme) => ({
+const DatabaseContext = createContext();
+export function useDatabase() {
+    return useContext(DatabaseContext);
+}
+
+const useStyles = createUseStyles({
     layout: {
         width: "100%",
         height: "100%",
@@ -81,7 +86,6 @@ const useStyles = createUseStyles((theme) => ({
                     fontSize: "48px"
                 }
             },
-
             "& .settings": {
                 display: "flex",
                 flexDirection: "column",
@@ -94,9 +98,33 @@ const useStyles = createUseStyles((theme) => ({
         width: "100%",
         height: "100%",
     }
-}));
+});
 
 export default function Layout() {
+    const [products, setProducts] = useState([]);
+    const updateProducts = useCallback(async () => {
+        setProducts(await window.api.GET_ALL_PRODUCTS());
+    }, []);
+    useEffect(() => {
+        updateProducts();
+    }, []);
+
+    const [finishes, setFinishes] = useState([]);
+    const updateFinishes = useCallback(async () => {
+        setFinishes(await window.api.GET_ALL_FINISHES());
+    }, []);
+    useEffect(() => {
+        updateFinishes();
+    }, []);
+
+    const [tags, setTags] = useState([]);
+    const updateTags = useCallback(async () => {
+        setTags(await window.api.GET_ALL_TAGS());
+    }, []);
+    useEffect(() => {
+        updateTags();
+    }, []);
+
     const styles = useStyles();
     return (
         <div className={styles.layout}>
@@ -104,9 +132,11 @@ export default function Layout() {
                 <NavigationLinks />
                 <Settings />
             </NavigationRail>
-            <main className={styles.main}>
-                <Outlet />
-            </main>
+            <DatabaseContext.Provider value={{products, updateProducts, finishes, updateFinishes, tags, updateTags}}>
+                <main className={styles.main}>
+                    <Outlet />
+                </main>
+            </DatabaseContext.Provider>
         </div>
     );
 }
