@@ -15,11 +15,12 @@ export async function GET_ALL_PRODUCTS() {
     `
 }
 
-/*
-        ${search != "" ?
+export async function SEARCH_FILTERED_PRODUCTS(search = "", filters = {}) {
+    return await Database`
+        ${search !== "" ?
             Database`
                 WITH search_filtered AS (
-                    SELECT DISTINCT product.id AS id, variation.extension AS extension
+                    SELECT DISTINCT product.id AS id
                     FROM product INNER JOIN variation ON product.id = variation.productID
                     WHERE product.index @@ to_tsquery(${search + ':*'}) OR variation.index @@ to_tsquery(${search + ':*'})
                 ),
@@ -31,7 +32,7 @@ export async function GET_ALL_PRODUCTS() {
             Database`
                 ${search === ""? Database`WITH` : Database``} tag_filtered AS (
                     ${Database.unsafe(Object.entries(filters).map(([_, value]) => (`
-                        SELECT DISTINCT variation.productID AS id, variation.extension AS extension
+                        SELECT DISTINCT variation.productID AS id
                         FROM variation INNER JOIN variation_tag ON variation.id = variation_tag.variationID
                         WHERE variation_tag.tagID = ANY ARRAY[${value.map(id => `${id}`).join(",")}]
                     `)).join(" INTERSECT "))}
@@ -49,12 +50,54 @@ export async function GET_ALL_PRODUCTS() {
         SELECT product.id AS id, name, category, COUNT(DISTINCT variation.extension) AS variationCount
         FROM product INNER JOIN variation ON variation.productID = product.id
             INNER JOIN categories ON product.id = categories.id AND variation.extension = categories.extension
-            ${search !== ""? Database`INNER JOIN search_filtered ON search_filtered.id = product.id AND search_filtered.extension = variation.extension` : Database``}
-            ${Object.entries(filters).length !== 0? Database`INNER JOIN tag_filtered ON tag_filtered.id = product.id AND tag_filtered.extension = variation.extension` : Database``}
-        WHERE variation.display = TRUE
+            ${search !== ""? Database`INNER JOIN search_filtered ON search_filtered.id = product.id` : Database``}
+            ${Object.entries(filters).length !== 0? Database`INNER JOIN tag_filtered ON tag_filtered.id = product.id` : Database``}
         GROUP BY product.id, name, category
     `
-*/
+}
+
+export async function CREATE_NEW_PRODUCT(product) {
+    const {id, name, description, variations} = product;
+
+    await Database`
+        INSERT INTO product(id, name, description, index) 
+        VALUES (${id}, ${name}, ${description?.replace("'", "''")?? ""}, to_tsvector('english', ${id} || ' ' || ${name} || ' ' || ${description?.replace("'", "''")?? "''"}));
+    `;
+    const variationIDList = await Database`
+        INSERT INTO variation(extension, subname, description, display, featured, overview, productID, index)
+        VALUES ${Database.unsafe(variations.map(({extension, subname, description, display, featured, overview}) => (
+            `(
+                '${extension?? "NONE"}',
+                '${subname?? ""}',
+                '${description?.replace("'", "''")?? ""}',
+                ${display?? false},
+                ${featured?? false},
+                '${JSON.stringify(overview).replace("'", "''")}',
+                '${id}',
+                to_tsvector('english', '${extension?? "NONE"}' || ' ' || '${subname?? ""}' || '${description?.replace("'", "''")?? ""}' || '${id}')
+            )`
+        )).join(", "))}
+        RETURNING id, extension;
+    `;
+    
+    for(const variation of variations) {
+        const variationID = variationIDList.find(({extension}) => variation.extension?? "NONE" === extension).id;
+        const {tags, finishes} = variation;
+
+        await Database`
+            INSERT INTO variation_tag(variationID, tagID) 
+            VALUES ${Database.unsafe(tags.map(tag => (
+                `('${variationID}', '${tag.id}')`
+            )).join(", "))};
+        `;
+        await Database`
+            INSERT INTO variation_finish(price, variationID, finishCode)
+            VALUES ${Database.unsafe(finishes.map(finish => (
+                `('${finish.value?? Infinity}', '${variationID}', '${finish.id}')`
+            )).join(", "))};
+        `;
+    }
+}
 
 export async function GET_PRODUCT_BY_ID(id) {
     return (await Database`
@@ -93,55 +136,12 @@ export async function GET_PRODUCT_BY_ID(id) {
     `)[0]
 }
 
-export async function CREATE_NEW_PRODUCT(product) {
-    const {id, name, description, variations} = product;
-
-    await Database`
-        INSERT INTO product(id, name, description, index) 
-        VALUES (${id}, ${name}, ${description?? ""}, to_tsvector('english', ${id} || ' ' || ${name} || ' ' || ${description?? "''"}));
-    `;
-    const variationIDList = await Database`
-        INSERT INTO variation(extension, subname, description, display, featured, overview, productID, index)
-        VALUES ${Database.unsafe(variations.map(({extension, subname, description, display, featured, overview}) => (
-            `(
-                '${extension?? "NONE"}',
-                '${subname?? ""}',
-                '${description?? ""}',
-                ${display?? false},
-                ${featured?? false},
-                '${JSON.stringify(overview)}',
-                '${id}',
-                to_tsvector('english', '${extension}' || ' ' || '${subname}' || '${description}' || '${id}')
-            )`
-        )).join(", "))}
-        RETURNING id, extension;
-    `;
-    
-    for(const variation of variations) {
-        const variationID = variationIDList.find(({extension}) => variation.extension === extension).id;
-        const {tags, finishes} = variation;
-
-        await Database`
-            INSERT INTO variation_tag(variationID, tagID) 
-            VALUES ${Database.unsafe(tags.map(tag => (
-                `('${variationID}', '${tag.id}')`
-            )).join(", "))};
-        `;
-        await Database`
-            INSERT INTO variation_finish(price, variationID, finishCode)
-            VALUES ${Database.unsafe(finishes.map(finish => (
-                `('${finish.value?? Infinity}', '${variationID}', '${finish.id}')`
-            )).join(", "))};
-        `;
-    }
-}
-
 export async function UPDATE_PRODUCT_BY_ID(id, product) {
     const {id: newID, name, description, variations} = product;
 
     await Database`
         UPDATE product
-        SET id = ${newID}, name = ${name}, description = ${description}
+        SET id = ${newID}, name = ${name}, description = ${description?.replace("'", "''")}
         WHERE id = ${id};
     `;
 
@@ -152,12 +152,12 @@ export async function UPDATE_PRODUCT_BY_ID(id, product) {
             `(
                 '${extension?? "NONE"}',
                 '${subname?? ""}',
-                '${description?? ""}',
+                '${description?.replace("'", "''")?? ""}',
                 ${display?? false},
                 ${featured?? false},
-                '${JSON.stringify(overview)}',
+                '${JSON.stringify(overview).replace("'", "''")}',
                 '${id}',
-                to_tsvector('english', '${extension}' || ' ' || '${subname}' || '${description}' || '${id}')
+                to_tsvector('english', '${extension?? "NONE"}' || ' ' || '${subname?? ""}' || '${description?.replace("'", "''")?? ""}' || '${id}')
             )`
         )).join(", "))}
         ON CONFLICT(extension, productID) DO UPDATE
