@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import SpecificationsForm from './specification-form';
 import BulbForm from './bulb-form';
@@ -40,9 +40,9 @@ const useStyles = createUseStyles((theme) => ({
 
 export default function OverviewForm({overviewData, onChange}) {
     const [overview, setOverview] = useState(overviewData?? {});
-    const changeOverview = useCallback(() => {
+    const changeOverview = () => {
         onChange?.(overview);
-    }, [overview, onChange]);
+    }
     useEffect(() => {
         changeOverview();
     }, [overview]);

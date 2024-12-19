@@ -89,13 +89,12 @@ const lion =  "#AB8F5C"; // Secondary Dark Color
 const clot =  "#C2AEAE"; // Error Light Color
 const wine =  "#4F1E2B"; // Error Dark Color
 
-export default function Themer({darkModeDefault = true, setDarkModeCookie, children}) {
+export default function Themer({darkModeDefault = true, children}) {
     const [darkMode, setDarkMode] = useState(darkModeDefault);
     // The toggle function which caches two versions
-    const toggleDarkMode = useCallback(() => {
+    const toggleDarkMode = () => {
         setDarkMode(!darkMode);
-        setDarkModeCookie?.(!darkMode);
-    }, [darkMode]);
+    }
 
     const generateTheme = useCallback((darkMode) => {
         return {

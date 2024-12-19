@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import useRippleEffect from './hooks/ripple';
 import {Label} from './typography';
@@ -108,11 +108,11 @@ const useStyles = createUseStyles((theme) => ({
 
 export default function TextArea({className, label, helperText, onChange, value, onClick, ...props}) {
     const [textArea, setTextArea] = useState(undefined);
-    const handleContainerClick = useCallback(event => {
+    const handleContainerClick = event => {
         if(textArea)
             textArea.focus();
         onClick?.(event);
-    }, [textArea]);
+    }
 
     const [text, setText] = useState(value?? "");
     useEffect(() => {
@@ -120,14 +120,14 @@ export default function TextArea({className, label, helperText, onChange, value,
         setFilled(!value || value === ""? false : true);
     }, [value]);
     const [filled, setFilled] = useState(!value || value === ""? false : true);
-    const handleFill = useCallback(event => {
+    const handleFill = event => {
         const target = event.currentTarget;
         setFilled(true);
         if(!target.value || !target.value.trim().length)
             setFilled(false);
         setText(target.value);
         onChange?.(target.value);
-    }, [onChange]);
+    }
 
     const styles = useStyles({filled});
     return (

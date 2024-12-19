@@ -1,5 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
+import {v4} from 'uuid';
 import Icon from './common/icon';
 import DropdownMenu from './common/dropdown-menu';
 import TextField from './common/text-field';
@@ -15,9 +16,9 @@ const bulbStyles = createUseStyles({
 
 function Bulb({bulbData, onChange, removeSelf}) {
     const [bulb, setBulb] = useState(bulbData?? {});
-    const changeBulb = useCallback(() => {
+    const changeBulb = () => {
         onChange?.(bulb);
-    }, [bulb, onChange])
+    }
     useEffect(() => {
         changeBulb();
     }, [bulb]);
@@ -27,6 +28,7 @@ function Bulb({bulbData, onChange, removeSelf}) {
         <div className={styles.bulb}>
             <TextField label="Bulb Shape" placeholder="Standard (A19)" value={bulb.shape} onChange={shape => setBulb({...bulb, shape})} />
             <TextField label="Base" placeholder="Medium (E26)" value={bulb.base} onChange={base => setBulb({...bulb, base})} />
+            <TextField label="Wattage" placeholder="100" value={bulb.wattage} onChange={wattage => setBulb({...bulb, wattage})} />
             <TextField label="Quantity" value={bulb.quantity} onChange={quantity => setBulb({...bulb, quantity})} />
             <Icon icon="close" button appearance='text' onPress={() => removeSelf(bulb)} />
         </div>
@@ -61,24 +63,24 @@ const bulbsFormStyles = createUseStyles({
 
 export default function BulbForm({bulbsData, onChange}) {
     const [bulbs, setBulbs] = useState(bulbsData?? []);
-    const changeBulbs = useCallback(() => {
+    const changeBulbs = () => {
         onChange?.(bulbs);
-    }, [bulbs, onChange]);
+    }
     useEffect(() => {
         changeBulbs();
     }, [bulbs]);
 
-    const handleBulbChange = useCallback((bulb, position) => {
+    const handleBulbChange = (bulb, position) => {
         bulbs[position] = bulb;
         setBulbs([...bulbs]);
-    }, [bulbs]);
+    }
 
-    const addBulb = useCallback(() => {
+    const addBulb = () => {
         setBulbs([...bulbs, {}]);
-    }, [bulbs]);
-    const removeBulb = useCallback(({shape, base}) => {
+    }
+    const removeBulb = ({shape, base}) => {
         setBulbs(bulbs.filter(bulb => bulb.shape !== shape || bulb.base !== base));
-    }, [bulbs]);
+    }
 
     const styles = bulbsFormStyles();
     return (
@@ -89,7 +91,7 @@ export default function BulbForm({bulbsData, onChange}) {
             </div>
             <div className={styles.container}>
                 {bulbs.map((bulb, index) => (
-                    <Bulb key={index} bulbData={bulb} onChange={bulb => handleBulbChange(bulb, index)} removeSelf={removeBulb} />
+                    <Bulb key={bulb.shape || bulb.base? `${bulb.shape}:${bulb.base}` : index} bulbData={bulb} onChange={bulb => handleBulbChange(bulb, index)} removeSelf={removeBulb} />
                 ))}
             </div>
         </div>

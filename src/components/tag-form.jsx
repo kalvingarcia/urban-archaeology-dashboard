@@ -1,9 +1,9 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {createUseStyles} from 'react-jss';
-import Typeahead from './common/typeahead';
+import Search from './common/search';
 import Chip from './common/chip';
 import {Subheading} from './common/typography';
-import {useTags} from './hooks/api-cache';
+import {useDatabase} from './layout';
 
 const useStyles = createUseStyles((theme) => ({
     tagForm: {
@@ -29,33 +29,31 @@ const useStyles = createUseStyles((theme) => ({
 
 export default function TagForm({tagData, onChange, error = false}) {
     const [tags, setTags] = useState(tagData?? []);
-    const changeTags = useCallback(() => {
+    const changeTags = () => {
         onChange?.(tags);
-    }, [tags, onChange]);
+    }
     useEffect(() => {
         changeTags();
     }, [tags]);
-    const {tags: allTags} = useTags();
+    const {tags: allTags} = useDatabase();
 
-    const addTag = useCallback(tag => {
+    const addTag = tag => {
         if(!tags.find(({id}) => tag.id ===id))
             setTags([...tags, tag]);
-    }, [tags]);
-    const removeTag = useCallback(id => {
+    }
+    const removeTag = id => {
         setTags(tags.filter(tag => tag.id !== id));
-    }, [tags]);
-
-    console.log(error);
+    }
 
     const styles = useStyles({error});
     return (
         <div className={styles.tagForm}>
             <div className={styles.heading}>
                 <Subheading className={styles.label}>Tags*</Subheading>
-                <Typeahead 
+                <Search 
                     label="Search"
                     options={allTags.map(({id, name}) => ({value: id, display: name}))}
-                    onChange={id => {
+                    onSelect={id => {
                         const {name, category} = allTags.find(tag => tag.id === id);
                         addTag({id, name, category});
                     }}

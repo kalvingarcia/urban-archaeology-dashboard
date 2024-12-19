@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import {Label} from './typography'
 import useRippleEffect from './hooks/ripple';
@@ -45,10 +45,10 @@ export default function Switch({label, value = false, onChange}) {
         setOn(value);
     }, [value]);
 
-    const toggle = useCallback(() => {
+    const toggle = () => {
         setOn(!on);
         onChange?.(!on);
-    }, [on, onChange]);
+    }
 
     const [rippleClass, rippleExpand, rippleFade] = useRippleEffect();
 

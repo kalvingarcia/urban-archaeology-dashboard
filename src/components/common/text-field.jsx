@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import useRippleEffect from './hooks/ripple';
 import {Label} from './typography';
@@ -102,11 +102,11 @@ const useStyles = createUseStyles((theme) => ({
 
 export default function TextField({className, label, helperText, value, onChange, onClick, error, ...props}) {
     const [textField, setTextField] = useState(undefined);
-    const handleContainerClick = useCallback(event => {
+    const handleContainerClick = event => {
         if(textField)
             textField.focus();
         onClick?.(event);
-    }, [textField]);
+    }
 
     const [text, setText] = useState(value?? "");
     useEffect(() => {
@@ -114,14 +114,14 @@ export default function TextField({className, label, helperText, value, onChange
         setFilled(!value || value === ""? false : true);
     }, [value]);
     const [filled, setFilled] = useState(!value || value === ""? false : true);
-    const handleFill = useCallback(event => {
+    const handleFill = event => {
         const target = event.currentTarget;
         setFilled(true);
         if(!target.value || !target.value.trim().length)
             setFilled(false);
         setText(target.value);
         onChange?.(target.value);
-    }, [onChange]);
+    }
 
     const styles = useStyles({filled, error});
     return (

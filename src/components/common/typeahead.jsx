@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {createUseStyles} from 'react-jss';
 import TextField from './text-field';
 import Animate from './animate';
@@ -75,14 +75,14 @@ export default function Typeahead({className, label, options, defaultOption, onC
     const [open, setOpen] = useState(false);
     const [display, setDisplay] = useState(defaultOption?.display?? "");
     const [filter, setFilter] = useState("");
-    const handleTypeahead = useCallback(text => {
+    const handleTypeahead = text => {
         setFilter(text);
-    }, []);
-    const handleSelect = useCallback(option => {
+    }
+    const handleSelect = option => {
         setDisplay(option.display);
         setOpen(false);
         onChange?.(option.value);
-    }, [onChange]);
+    }
 
     const [position, setPosition] = useState(undefined);
     const [height, setHeight] = useState(0);
@@ -103,11 +103,11 @@ export default function Typeahead({className, label, options, defaultOption, onC
     }, [position, open, flip]);
 
     const [dropdown, setDropdown] = useState();
-    const handleBlur = useCallback(event => {
+    const handleBlur = event => {
         if(event.target.value !== display) setDisplay(new String(display));
         if(event.relatedTarget !== dropdown)
             setOpen(false);
-    }, [display, dropdown]);
+    }
 
     const styles = menuStyles({height, flip});
     return (

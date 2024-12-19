@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import DropdownMenu from './common/dropdown-menu';
 import TextField from './common/text-field';
@@ -27,9 +27,9 @@ const specificationStyles = createUseStyles({
 
 function Specification({label, specificationData, onChange}) {
     const [specification, setSpecification] = useState(specificationData);
-    const changeSpecification = useCallback(() => {
+    const changeSpecification = () => {
         onChange?.(specification);
-    }, [specification, onChange]);
+    }
     useEffect(() => {
         changeSpecification();
     }, [specification]);
@@ -51,9 +51,9 @@ function Specification({label, specificationData, onChange}) {
 
 export default function SpecificationsForm({specificationsData, onChange}) {
     const [specifications, setSpecifications] = useState(specificationsData?? {});
-    const changeSpecifications = useCallback(() => {
+    const changeSpecifications = () => {
         onChange?.(specifications);
-    }, [specifications, onChange]);
+    }
     useEffect(() => {
         changeSpecifications();
     }, [specifications]);

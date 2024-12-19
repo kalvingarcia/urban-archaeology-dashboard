@@ -1,5 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
+import {v4} from 'uuid';
 import FinishesForm from './finishes-form';
 import TextField from './common/text-field';
 import TextArea from './common/text-area';
@@ -53,14 +54,14 @@ const variationFormStyles = createUseStyles({
 
 export default function VariationForm({variationData, onChange, errors}) {
     const [variation, setVariation] = useState(variationData?? {});
-    const changeVariation = useCallback(() => {
+    const changeVariation = () => {
         onChange?.(variation);
-    }, [variation, onChange]);
+    }
     useEffect(() => {
+        if(!variation.id)
+            setVariation({...variation, id: v4()})
         changeVariation();
     }, [variation]);
-
-    console.log(errors)
     
     const styles = variationFormStyles();
     return (

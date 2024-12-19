@@ -1,10 +1,11 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
+import {v4} from 'uuid';
 import Icon from './common/icon';
 import TextField from './common/text-field';
 import Typeahead from './common/typeahead';
 import {Subheading} from './common/typography';
-import {useFinishes} from './hooks/api-cache';
+import {useDatabase} from './layout';
 
 const finishStyles = createUseStyles({
     finish: {
@@ -16,13 +17,13 @@ const finishStyles = createUseStyles({
 
 function Finish({finishData, onChange, removeSelf}) {
     const [finish, setFinish] = useState(finishData?? {});
-    const changeFinish = useCallback(() => {
+    const changeFinish = () => {
         onChange?.(finish);
-    }, [finish, onChange]);
+    }
     useEffect(() => {
         changeFinish();
     }, [finish]);
-    const {finishes} = useFinishes();
+    const {finishes} = useDatabase();
 
     const styles = finishStyles();
     return (
@@ -69,25 +70,24 @@ const finishesFormStyles = createUseStyles((theme) => ({
 
 export default function FinishesForm({finishesData, onChange, error = false}) {
     const [finishes, setFinishes] = useState(finishesData?? []);
-    const changeFinishes = useCallback(() => {
+    const changeFinishes = () => {
         onChange?.(finishes);
-    }, [finishes, onChange]);
+    }
     useEffect(() => {
         changeFinishes();
     }, [finishes]);
 
-    const handleFinishChange = useCallback((finish, position) => {
+    const handleFinishChange = (finish, position) => {
         finishes[position] = finish;
         setFinishes([...finishes]);
-    }, [finishes]);
+    }
 
-    const addFinish = useCallback(() => {
+    const addFinish = () => {
         setFinishes([...finishes, {}]);
-    }, [finishes]);
-    const removeFinish = useCallback(id => {
+    }
+    const removeFinish = id => {
         setFinishes(finishes.filter(finish => finish.id !== id));
-    }, [finishes]);
-
+    }
     const styles = finishesFormStyles({error});
     return (
         <div className={styles.finishesForm}>
@@ -97,7 +97,7 @@ export default function FinishesForm({finishesData, onChange, error = false}) {
             </div>
             <div className={styles.container}>
                 {finishes.map((finish, index) => (
-                    <Finish key={index} finishData={finish} onChange={finish => handleFinishChange(finish, index)} removeSelf={removeFinish} />
+                    <Finish key={finish.id?? index} finishData={finish} onChange={finish => handleFinishChange(finish, index)} removeSelf={removeFinish} />
                 ))}
             </div>
         </div>

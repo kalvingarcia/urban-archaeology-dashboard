@@ -17,7 +17,8 @@ const useStyles = createUseStyles((theme) => ({
         gap: "5px",
         padding: "5px 10px",
         borderRadius: "5px",
-        border: `1pt solid ${theme.onPrimary + "7F"}`,
+        border: ({active}) => active? "none" : `1pt solid ${theme.onPrimary + "7F"}`,
+        backgroundColor: ({active}) => active? theme.onPrimary : "transparent",
 
         "&::after": {
             content: "''",
@@ -26,13 +27,16 @@ const useStyles = createUseStyles((theme) => ({
             position: "absolute",
             inset: 0,
             opacity: 0,
-            backgroundColor: theme.onPrimary
+            backgroundColor: ({active}) => active? theme.primary : theme.onPrimary
         },
         "&:hover::after": {
             opacity: 0.2
         },
         "&:active::after": {
             opacity: 0.1
+        },
+        "& > *": {
+            color: ({active}) => active? theme.primary : theme.onPrimary
         }
     },
     icon: {
@@ -50,8 +54,8 @@ const useStyles = createUseStyles((theme) => ({
     }
 }));
 
-export default function Chip({className, label, icon, onPress, leadingIcon = false}) {
-    const styles = useStyles();
+export default function Chip({className, active, label, icon, onPress, leadingIcon = false}) {
+    const styles = useStyles({active});
     return (
         <div className={combine(styles.chip, className)} onClick={onPress}>
             {leadingIcon && icon && <Icon className={styles.icon} icon={icon} />}
