@@ -23,3 +23,12 @@ package-lock.json
 
 # Electron-Forge
 out/
+
+
+# LEGACY DASHBOARD IGNORES
+**/Pipfile
+
+**/sessions
+**/demos
+
+**/__pycache__
