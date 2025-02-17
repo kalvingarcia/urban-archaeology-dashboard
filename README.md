@@ -8,4 +8,4 @@ This project creates a database user interface for Urban Archaeology's staff to 
 
 This meant I needed to change my approach. I ultimately decided to just use React within an Electron app to more closely match the aesthetic of the [Urban Archaeology Website](https://urbarch-website.kalvin.live). This choice enabled me to reuse some code to save time, but also allowed me to have much more control over the design and user experience for the application.
 
-The legacy code can still be found in this repository under `/legacy-dashboard`.
+The legacy code can still be found in this repository under [/legacy-dashboard](legacy-dashboard).
