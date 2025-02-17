@@ -91,7 +91,7 @@ export default function OverviewForm({overviewData, onChange}) {
                         </div>
                     }
                     {overview.type === "lighting" &&
-                        <BulbForm bulbData={overview.bulbs} onChange={bulbs => setOverview({...overview, bulbs})}/>
+                        <BulbForm bulbsData={overview.bulbs} onChange={bulbs => setOverview({...overview, bulbs})}/>
                     }
                     {/* {overview.type === "washstand" &&
                         <div>

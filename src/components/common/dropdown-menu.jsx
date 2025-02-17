@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {createUseStyles} from 'react-jss';
-import TextField from './text-field';
 import Animate from './animate';
 import {combine} from './helpers/styles';
 import { Label } from './typography';

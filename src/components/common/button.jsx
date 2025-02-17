@@ -54,7 +54,7 @@ export default function Button({className, role = "primary", appearance = "fille
     const styles = useStyles({role, appearance, rippleClass});
     return (
         <button className={combine(styles.button, className)} onMouseDown={rippleExpand} onMouseUp={rippleFade} onClick={onPress}>
-            {cloneElement(icon, {className: "buttonIcon", __isInButton: true})?? undefined}
+            {icon && cloneElement(icon, {className: "buttonIcon", __isInButton: true})}
             {children}
         </button>
     )

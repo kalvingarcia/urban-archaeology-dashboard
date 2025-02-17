@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import {v4} from 'uuid';
 import Icon from './common/icon';
-import DropdownMenu from './common/dropdown-menu';
-import TextField from './common/text-field';
+import TextArea from './common/text-area';
 import {Label} from './common/typography';
 
 const bulbStyles = createUseStyles({
@@ -20,16 +19,15 @@ function Bulb({bulbData, onChange, removeSelf}) {
         onChange?.(bulb);
     }
     useEffect(() => {
+        if(!bulb.key)
+            setBulb({...bulb, key: v4()});
         changeBulb();
     }, [bulb]);
 
     const styles = bulbStyles();
     return (
         <div className={styles.bulb}>
-            <TextField label="Bulb Shape" placeholder="Standard (A19)" value={bulb.shape} onChange={shape => setBulb({...bulb, shape})} />
-            <TextField label="Base" placeholder="Medium (E26)" value={bulb.base} onChange={base => setBulb({...bulb, base})} />
-            <TextField label="Wattage" placeholder="100" value={bulb.wattage} onChange={wattage => setBulb({...bulb, wattage})} />
-            <TextField label="Quantity" value={bulb.quantity} onChange={quantity => setBulb({...bulb, quantity})} />
+            <TextArea label="Bulb Information" placeholder="Standard (A19) Medium Base (E26) 10W LED (100W Equivalent)" value={bulb.info} onChange={info => setBulb({...bulb, info})} />
             <Icon icon="close" button appearance='text' onPress={() => removeSelf(bulb)} />
         </div>
     );
@@ -78,20 +76,20 @@ export default function BulbForm({bulbsData, onChange}) {
     const addBulb = () => {
         setBulbs([...bulbs, {}]);
     }
-    const removeBulb = ({shape, base}) => {
-        setBulbs(bulbs.filter(bulb => bulb.shape !== shape || bulb.base !== base));
+    const removeBulb = ({key}) => {
+        setBulbs(bulbs.filter(bulb => bulb.key !== key));
     }
 
     const styles = bulbsFormStyles();
     return (
         <div className={styles.bulbsForm}>
             <div className={styles.heading}>
-                <Label>Bulb</Label>
+                <Label>Bulbs</Label>
                 <Icon className="add" icon="add" button onPress={addBulb} />
             </div>
             <div className={styles.container}>
                 {bulbs.map((bulb, index) => (
-                    <Bulb key={bulb.shape || bulb.base? `${bulb.shape}:${bulb.base}` : index} bulbData={bulb} onChange={bulb => handleBulbChange(bulb, index)} removeSelf={removeBulb} />
+                    <Bulb key={bulb.key?? index} bulbData={bulb} onChange={bulb => handleBulbChange(bulb, index)} removeSelf={removeBulb} />
                 ))}
             </div>
         </div>

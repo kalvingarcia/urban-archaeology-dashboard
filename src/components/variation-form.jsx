@@ -59,7 +59,7 @@ export default function VariationForm({variationData, onChange, errors}) {
     }
     useEffect(() => {
         if(!variation.id)
-            setVariation({...variation, id: v4()})
+            setVariation({...variation, id: v4()});
         changeVariation();
     }, [variation]);
     
