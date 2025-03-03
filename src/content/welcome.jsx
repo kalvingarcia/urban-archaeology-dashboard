@@ -1,7 +1,7 @@
 import React from 'react';
 import {createUseStyles} from 'react-jss';
-import {Label, Subtitle, Title} from './common/typography';
-import useClock from './common/hooks/clock';
+import {Label, Subtitle, Title} from '../components/common/typography';
+import useClock from '../components/common/hooks/clock';
 
 const useStyles = createUseStyles({
     home: {

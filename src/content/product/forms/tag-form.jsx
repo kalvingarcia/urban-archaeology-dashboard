@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {createUseStyles} from 'react-jss';
-import Search from './common/search';
-import Chip from './common/chip';
-import {Subheading} from './common/typography';
-import {useDatabase} from './layout';
+import Search from '../../../components/common/search';
+import Chip from '../../../components/common/chip';
+import {Subheading} from '../../../components/common/typography';
+import {useDatabase} from '../../../components/layout';
 
 const useStyles = createUseStyles((theme) => ({
     tagForm: {

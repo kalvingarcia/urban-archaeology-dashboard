@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router';
 import {createUseStyles} from 'react-jss';
-import Tabs, {Tab} from './common/tabs';
-import Button from './common/button';
-import Icon from './common/icon';
-import {Title, Subheading, Label} from './common/typography';
-import TextField from './common/text-field';
-import TextArea from './common/text-area';
-import VariationForm from './variation-form';
-import Modal from './common/modal';
-import {useDatabase}  from './layout';
+import Tabs, {Tab} from '../../components/common/tabs';
+import Button from '../../components/common/button';
+import Icon from '../../components/common/icon';
+import {Title, Subheading, Label} from '../../components/common/typography';
+import TextField from '../../components/common/text-field';
+import TextArea from '../../components/common/text-area';
+import VariationForm from './forms/variation-form';
+import Modal from '../../components/common/modal';
+import {useDatabase}  from '../../components/layout';
 
 const productFormStyles = createUseStyles((theme) => ({
     view: {

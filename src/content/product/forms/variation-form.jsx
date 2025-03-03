@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import {v4} from 'uuid';
 import FinishesForm from './finishes-form';
-import TextField from './common/text-field';
-import TextArea from './common/text-area';
-import Switch from './common/switch';
+import TextField from '../../../components/common/text-field';
+import TextArea from '../../../components/common/text-area';
+import Switch from '../../../components/common/switch';
 import TagForm from './tag-form';
 import OverviewForm from './overview-form';
 

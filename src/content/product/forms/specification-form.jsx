@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
-import DropdownMenu from './common/dropdown-menu';
-import TextField from './common/text-field';
-import {Label} from './common/typography';
+import DropdownMenu from '../../../components/common/dropdown-menu';
+import TextField from '../../../components/common/text-field';
+import {Label} from '../../../components/common/typography';
 
 const specificationStyles = createUseStyles({
     specification: {

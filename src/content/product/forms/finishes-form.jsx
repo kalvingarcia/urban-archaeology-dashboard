@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import {v4} from 'uuid';
-import Icon from './common/icon';
-import TextField from './common/text-field';
-import Typeahead from './common/typeahead';
-import {Subheading} from './common/typography';
-import {useDatabase} from './layout';
+import Icon from '../../../components/common/icon';
+import TextField from '../../../components/common/text-field';
+import Typeahead from '../../../components/common/typeahead';
+import {Subheading} from '../../../components/common/typography';
+import {useDatabase} from '../../../components/layout';
 
 const finishStyles = createUseStyles({
     finish: {

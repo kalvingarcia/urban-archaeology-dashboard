@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
+import {Label, Subheading} from '../../../components/common/typography';
+import DropdownMenu from '../../../components/common/dropdown-menu';
+import TextArea from '../../../components/common/text-area';
 import SpecificationsForm from './specification-form';
 import BulbForm from './bulb-form';
-import DropdownMenu from './common/dropdown-menu';
-import TextArea from './common/text-area';
-import {Label, Subheading} from './common/typography';
 
 const useStyles = createUseStyles((theme) => ({
     heading: {

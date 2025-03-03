@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {createUseStyles} from 'react-jss';
 import {v4} from 'uuid';
-import Icon from './common/icon';
-import TextArea from './common/text-area';
-import {Label} from './common/typography';
+import Icon from '../../../components/common/icon';
+import TextArea from '../../../components/common/text-area';
+import {Label} from '../../../components/common/typography';
 
 const bulbStyles = createUseStyles({
     bulb: {

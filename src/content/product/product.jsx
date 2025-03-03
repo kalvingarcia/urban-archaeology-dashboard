@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useParams, useNavigate} from 'react-router';
 import {createUseStyles} from 'react-jss';
-import Tabs, {Tab} from './common/tabs';
-import Button from './common/button';
-import Icon from './common/icon';
-import {Title, Label, Body} from './common/typography';
+import Tabs, {Tab} from '../../components/common/tabs';
+import Icon from '../../components/common/icon';
+import {Title, Label, Body} from '../../components/common/typography';
 
 const useStyles = createUseStyles((theme) => ({
     view: {

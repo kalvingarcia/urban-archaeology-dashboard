@@ -4,14 +4,14 @@ import {createUseStyles} from 'react-jss';
 import {VariableSizeList} from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {v4} from 'uuid';
-import Icon from './common/icon';
-import Modal from './common/modal';
-import Button from './common/button';
-import Search from './common/search';
-import {Title, Label, Subheading} from './common/typography';
-import {useDatabase} from './layout';
-import {combine} from './common/helpers/styles';
-import Chip from './common/chip';
+import Icon from '../../components/common/icon';
+import Modal from '../../components/common/modal';
+import Button from '../../components/common/button';
+import Search from '../../components/common/search';
+import {Title, Label, Subheading} from '../../components/common/typography';
+import {useDatabase} from '../../components/layout';
+import {combine} from '../../components/common/helpers/styles';
+import Chip from '../../components/common/chip';
 
 const useStyles = createUseStyles((theme) => ({
     productList: {
