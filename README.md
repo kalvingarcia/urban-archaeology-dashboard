@@ -2,10 +2,10 @@
 Author: Kalvin Garcia
 
 This project was implemented alongside the Urban Archaeology website. The purpose was to provide a form structure to
-add product data for the website. Because I'm the only person using this version, it is in an incomplete state and
+add product data for the website. Because I was the only person using the legacy version, it was in an incomplete state and
 using relatively inefficient code implemented in Python and KivyMD.
 
-The goal is to eventually create a dashboard using React Native with more efficient code and more ease-of-use (now
+The goal is to eventually create a dashboard using React and Electron with more efficient code and more ease-of-use (now
 that I know how the dahsboard would be used), so that Urban Archaeology can edit the database using the dashboard
 themselves whenever they need to after the website is complete.
 
