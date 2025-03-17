@@ -93,11 +93,6 @@ export default function OverviewForm({overviewData, onChange}) {
                     {overview.type === "lighting" &&
                         <BulbForm bulbsData={overview.bulbs} onChange={bulbs => setOverview({...overview, bulbs})}/>
                     }
-                    {/* {overview.type === "washstand" &&
-                        <div>
-                            <Label>Options</Label>
-                        </div>
-                    } */}
                     <TextArea 
                         label="Notes" 
                         helperText="Any other information that is required for the item."
