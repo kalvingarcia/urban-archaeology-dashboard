@@ -35,6 +35,9 @@ import Welcome from './content/welcome';
 import ProductList from "./content/product/product-list";
 import Product from "./content/product/product";
 import ProductForm from './content/product/product-form';
+import SalvageList from './content/salvage/salvage-list';
+import CustomList from './content/custom/custom-list';
+import TagList from './content/tag/tag-list';
 
 import urbanIcons from "./assets/icons/UrbanIcons.woff";
 import trajanBlack from "./assets/fonts/trajan/TrajanBlack.otf";
@@ -169,22 +172,15 @@ function App() {
                             <Route path=":id" element={<Product />} />
                             <Route path=":id/edit" element={<ProductForm />} />
                         </Route>
-                        {/* <Route path="salvage">
+                        <Route path="salvage">
                             <Route index element={<SalvageList />} />
-                            <Route path="create" element={<SalvageForm />} />
-                            <Route path=":id" element={<Salvage />} />
-                            <Route path=":id/edit" element={<SalvageForm />} />
                         </Route>
                         <Route path="custom">
                             <Route index element={<CustomList />} />
-                            <Route path="create" element={<CustomForm />} />
-                            <Route path=":id" element={<Custom />} />
-                            <Route path=":id/edit" element={<CustomForm />} />
                         </Route>
                         <Route path="tags">
                             <Route index element={<TagList />} />
                         </Route>
-                        <Route path="settings" element={<Settings />} /> */}
                     </Route>
                 </Routes>
             </HashRouter>

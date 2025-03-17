@@ -4,7 +4,7 @@ import {createUseStyles} from 'react-jss';
 
 const useStyles = createUseStyles((theme) => ({}));
 
-export default function Tags() {
+export default function SalvageList() {
     const {id} = useParams();
     const navigate = useNavigate();
 
